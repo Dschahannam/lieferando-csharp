@@ -1,0 +1,13 @@
+{
+  "Language": "de",
+  "URL": "https://cw-api.takeaway.com/",
+  "Password": "Takeaway",
+  "Version": "5.7",
+  "SystemVersion": "24",
+  "AppVersion": "4.15.3.2",
+  "AppName": "Takeaway.com",
+  "ClientHeaders": {
+    "x-country-code": "de",
+    "x-language-code": "de"
+  }
+}
