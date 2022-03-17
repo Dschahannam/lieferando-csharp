@@ -4,7 +4,7 @@ The following repository contains reverse backend structures from Takeaway.com /
 This allows the user to place orders, track the orders or perform other actions
 
 ## What it does
-The following program creates one / or more requests to the server & allows an order without ever having opened the page.
+The following program creates one / or more requests to the server & allows an order without ever having opened the page.  
 **Warning:** It could well be that you get ratelimited after too many orders.
 
 ## How it works
