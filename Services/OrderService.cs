@@ -70,7 +70,7 @@ namespace Lieferando.Services
                 foreach (var takeawayRestaurant in takeawayRestaurantsResponse.Restaurants.Values.Where(restaurant => restaurant.ShippingInfo.Delivery.IsOpenForOrder))
                 {
                     if (CURRENT_LOOPS <= MAX_LOOPS) CURRENT_LOOPS++;
-                    //else return;
+                    else return;
 
                         if (takeawayRestaurant == null)
                         {
