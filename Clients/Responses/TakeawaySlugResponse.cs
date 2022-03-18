@@ -298,7 +298,7 @@ namespace Lieferando.Clients.Requests
         public partial class Metric
         {
             [JsonProperty("unit")]
-            public string? Unit { get; set; }
+            public string Unit { get; set; }
 
             [JsonProperty("quantity")]
             public long? Quantity { get; set; }

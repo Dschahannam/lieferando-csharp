@@ -4,7 +4,6 @@ using Lieferando.Clients;
 using Lieferando.Extensions;
 using Lieferando.Managers;
 using Lieferando.Model;
-using Lieferando.Utilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -35,6 +34,7 @@ namespace Lieferando
             services.AddSingleton<Hash>();
 
             services.AddSingleton<TakeawayRequestManager>();
+            services.AddSingleton<TakeawayHttpApiClientHandler>();
 
             services.BindAllClassesFrom<TakeawayRequest>(ServiceCollectionExtensions.ServiceType.REQUEST);
 
@@ -48,7 +48,7 @@ namespace Lieferando
 
                 foreach (var clientHeaders in _config.GetSection("ClientHeaders").GetChildren())
                     client.DefaultRequestHeaders.Add(clientHeaders.Key, clientHeaders.Value);
-            });
+            }).ConfigurePrimaryHttpMessageHandler<TakeawayHttpApiClientHandler>();
 
             services.AddHostedService<OrderService>();
         }

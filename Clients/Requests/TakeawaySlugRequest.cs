@@ -29,6 +29,7 @@ namespace Lieferando.Clients.Requests
             };
 
             _takeawayHttpApiClient.Params = requestParameters;
+            _takeawayHttpApiClient.FinishedTour = true;
 
             return JsonConvert.DeserializeObject<TakeawaySlugResponse>(await _takeawayHttpApiClient.Request(HttpMethod.Get, this));
         }

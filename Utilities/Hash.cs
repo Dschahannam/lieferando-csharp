@@ -9,22 +9,21 @@ namespace Lieferando.Utilities
     {
         public string Encode(IHashable hashableInterface)
         {
-            using var provider = System.Security.Cryptography.MD5.Create();
             StringBuilder builder = new StringBuilder();
-
-            foreach (byte b in provider.ComputeHash(Encoding.UTF8.GetBytes(hashableInterface.GetHashString())))
-                builder.Append(b.ToString("x2").ToLower());
+            using (var provider = System.Security.Cryptography.MD5.Create())
+                foreach (byte b in provider.ComputeHash(Encoding.UTF8.GetBytes(hashableInterface.GetHashString())))
+                    builder.Append(b.ToString("x2").ToLower());
 
             return builder.ToString();
         }
 
         public string Encode(string Input)
         {
-            using var provider = System.Security.Cryptography.MD5.Create();
             StringBuilder builder = new StringBuilder();
 
-            foreach (byte b in provider.ComputeHash(Encoding.UTF8.GetBytes(Input)))
-                builder.Append(b.ToString("x2").ToLower());
+            using (var provider = System.Security.Cryptography.MD5.Create())
+                foreach (byte b in provider.ComputeHash(Encoding.UTF8.GetBytes(Input)))
+                    builder.Append(b.ToString("x2").ToLower());
 
             return builder.ToString();
         }

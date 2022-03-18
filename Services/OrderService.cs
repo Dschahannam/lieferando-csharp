@@ -67,40 +67,41 @@ namespace Lieferando.Services
                     return;
                 }
 
-                foreach (var takeawayRestaurant in takeawayRestaurantsResponse.Restaurants.Values.Where(restaurant => restaurant.ShippingInfo.Delivery.IsOpenForOrder))
+                //foreach (var takeawayRestaurant in takeawayRestaurantsResponse.Restaurants.Values.Where(restaurant => restaurant.ShippingInfo.Delivery.IsOpenForOrder))
+                //{
+                //if (CURRENT_LOOPS <= MAX_LOOPS) CURRENT_LOOPS++;
+                //else return;
+                var takeawayRestaurant = takeawayRestaurantsResponse.Restaurants.Values.FirstOrDefault(restaurant => restaurant.ShippingInfo.Delivery.IsOpenForOrder);
+                if (takeawayRestaurant == null)
                 {
-                    if (CURRENT_LOOPS <= MAX_LOOPS) CURRENT_LOOPS++;
-                    else return;
+                    _logger.Console("Order", "Sorry, but in this city are no restaurants opened.");
+                    return;
+                }
 
-                        if (takeawayRestaurant == null)
-                        {
-                            _logger.Console("Order", "Sorry, but in this city are no restaurants opened.");
-                            return;
-                        }
+                TakeawaySlugResponse takeawaySlugResponse = await _takeawayRequestManager.Get<TakeawaySlugRequest>().Request(takeawayRestaurant.PrimarySlug);
+                if (takeawaySlugResponse == null)
+                {
+                    _logger.Console("Order", "Sorry, but error.");
+                    return;
+                }
 
-                        TakeawaySlugResponse takeawaySlugResponse = await _takeawayRequestManager.Get<TakeawaySlugRequest>().Request(takeawayRestaurant.PrimarySlug);
-                        if (takeawaySlugResponse == null)
-                        {
-                            _logger.Console("Order", "Sorry, but error.");
-                            return;
-                        }
+                _logger.Console("Order", $"Target Restaurant: {takeawaySlugResponse.Brand.Name}, {takeawayRestaurant.Location.City}, {takeawayRestaurant.Location.Country}");
 
-                        _logger.Console("Order", $"Target Restaurant: {takeawaySlugResponse.Brand.Name}, {takeawayRestaurant.Location.City}, {takeawayRestaurant.Location.Country}");
+                var targetProductToOrder = takeawaySlugResponse.Menu.Products.Values.FirstOrDefault(product => product.Name.Contains("Salat"));
+                if (targetProductToOrder == null)
+                {
+                    _logger.Console("Order", "Sorry, this restaurant does not have Salad.");
 
-                        var targetProductToOrder = takeawaySlugResponse.Menu.Products.Values.FirstOrDefault(product => product.Name.Contains("Salat"));
-                        if (targetProductToOrder == null)
-                        {
-                            _logger.Console("Order", "Sorry, this restaurant does not have Salad.");
+                    targetProductToOrder = takeawaySlugResponse.Menu.Products.Values.FirstOrDefault(product => product.Name.Contains("Cola"));
+                    if (targetProductToOrder == null)
+                    {
+                        _logger.Console("Order", "Sorry, this restaurant does not have Cola.");
+                        return;
+                    }
+                }
 
-                            targetProductToOrder = takeawaySlugResponse.Menu.Products.Values.FirstOrDefault(product => product.Name.Contains("Cola"));
-                            if (targetProductToOrder == null)
-                            {
-                                _logger.Console("Order", "Sorry, this restaurant does not have Cola.");
-                                return;
-                            }
-                        }
-
-                        TakeawayOrderData takeawayOrderRequest = new TakeawayOrderData
+#if (!DEBUG)
+                    TakeawayOrderData takeawayOrderRequest = new TakeawayOrderData
                         {
                             Address = new TakeawayOrderData.OrderAddress(takeawayGeocoderAddress.City, "", takeawayGeocoderAddress.Lat, takeawayGeocoderAddress.Lng, takeawayGeocoderAddress.TakeawayPostalCode, takeawayGeocoderAddress.Street, takeawayGeocoderAddress.StreetNumber),
                             CartItems = new TakeawayOrderData.CartItem[] { new TakeawayOrderData.CartItem("", targetProductToOrder.Variants.First().Id, new object[] { }, 10) },
@@ -142,7 +143,8 @@ namespace Lieferando.Services
                         {
                             _logger.Console("Order", "Ordner couldnt be completed.");
                         }
-                }
+#endif
+                //}
             }
             catch (Exception ex)
             {
